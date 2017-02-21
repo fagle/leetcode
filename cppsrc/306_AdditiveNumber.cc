@@ -87,4 +87,5 @@ int main() {
     string s1("123");//true
     string s2("120122436");//false
     cout << s.isAdditiveNumber(s2) << endl;
+    getchar();
 }
