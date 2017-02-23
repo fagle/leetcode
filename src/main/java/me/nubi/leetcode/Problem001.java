@@ -17,10 +17,11 @@ public class Problem001 {
 
     private int search(int [] nums, int src, int target) {
         for (int i=0; i<nums.length; i++) {
-            if (i == src)
-                continue;
-            if (target == nums[i])
+            if (target == nums[i]) {
+                if (i == src)
+                    continue;
                 return i;
+            }
         }
         return -1;
     }
