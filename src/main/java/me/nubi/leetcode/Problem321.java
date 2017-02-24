@@ -6,6 +6,7 @@ package me.nubi.leetcode;
 public class Problem321 {
     public int[] maxNumber(int[] nums1, int[] nums2, int k) {
         int[] s = new int[k];
+        //总共需要k个数字，按照两个数组一边出几个数字进行拆分
         if (k == nums1.length + nums2.length) {
             s = merge(nums1, nums2);
             return s;
@@ -22,6 +23,7 @@ public class Problem321 {
         return s;
     }
 
+    //把两个数组中所有数字全量合并出最大的数
     private int[] merge(int [] a, int [] b) {
         int n = a.length + b.length;
         int[] s = new int[n];
@@ -73,6 +75,7 @@ public class Problem321 {
         return s;
     }
 
+    //在一个数组中找出最大的k位数，如果第一个数字最大，则缩小范围递归调用
     private int[] maxNumber(int[] nums, int start, int k) {
         int[] result = new int[k];
         int minPos = start;
@@ -112,6 +115,7 @@ public class Problem321 {
         return result;
     }
 
+    //比较两个有序数组序列
     private int compare(int [] a, int [] b) {
         for (int i=0; i < a.length; i++) {
             if (a[i] < b[i])
