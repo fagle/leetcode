@@ -6,3 +6,7 @@ select FirstName, LastName, City, State from Person left join Address on Person.
 /* 176. Second Highest Salary */
 /* Runtime: 1681 ms */
 select max(Salary) as SecondHighestSalary from Employee where Salary != (select max(Salary) from Employee);
+
+/* beats 43.98% submissions*/
+/* Runtime: 867 ms */
+select max(Salary) as SecondHighestSalary from Employee where Salary != (select max(Salary) from Employee where Salary >= (select AVG (Salary) from Employee));
