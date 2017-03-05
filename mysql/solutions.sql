@@ -11,6 +11,7 @@ select max(Salary) as SecondHighestSalary from Employee where Salary != (select 
 /* Runtime: 867 ms */
 CREATE TABLE Employee (Id INT , Salary INT );
 INSERT INTO Employee VALUES (1, 100);
+INSERT INTO Employee VALUES (2, 100);
 INSERT INTO Employee VALUES (2, 200),(3, 300);
 select max(Salary) as SecondHighestSalary from Employee where Salary != (select max(Salary) from Employee where Salary >= (select AVG (Salary) from Employee));
 
@@ -21,6 +22,26 @@ SELECT MAX(Salary) AS SecondHighestSalary FROM Employee WHERE Id IN (SELECT a.Id
 /* beats 40.07% submissions*/
 /* Runtime: 909 ms */
 SELECT MAX(Salary) AS SecondHighestSalary FROM Employee WHERE Id IN (SELECT a.Id FROM Employee a WHERE a.Salary < (SELECT max(Salary) FROM Employee) and a.Salary >= (SELECT AVG(Salary) FROM  Employee) );
+
+/* beats 84.50% submissions*/
+/* Runtime: 696 ms */
+SELECT MAX(Salary) AS SecondHighestSalary FROM (SELECT DISTINCT Salary FROM Employee ORDER BY Salary desc LIMIT 1,1) a;
+
+/* 177. Nth Highest Salary */
+/* Runtime: 643 ms */
+/* beats 90.04% submissions*/
+delimiter $$
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+DECLARE r int;
+set r=N-1;
+  RETURN (
+      # Write your MySQL query statement below.
+        SELECT MAX(Salary) FROM (SELECT DISTINCT Salary FROM Employee ORDER BY Salary DESC LIMIT r,1 ) a
+  );
+END
+$$
+delimiter ;
 
 /* 196. Delete Duplicate Emails */
 /* Runtime: 971 ms */
