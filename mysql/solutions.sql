@@ -78,3 +78,24 @@ create table Orders(Id int, CustomerId int);
 insert into Customers values(1, 'joe'), (2, 'henry'), (3, 'sam'), (4, 'Max');
 insert into Orders values(1, 3), (2,1);
 select Name from Customers where Id not in (select Customers.Id from Customers JOIN Orders where Customers.Id = Orders.CustomerId);
+
+CREATE TABLE `onlineLog` (
+  `record_time` varchar(20) DEFAULT NULL,
+  `zid` int(11) DEFAULT NULL,
+  `sid` int(11) DEFAULT NULL,
+  `online_num` int(11) DEFAULT NULL,
+  `id` double NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/* 查询最近各区最大在线人数情况 */
+select c.*  from
+  (select b.* from
+    (select max(online_num) as online_num, sid from onlinelog group by sid )a
+    join onlinelog b
+  where a.online_num=b.online_num and a.sid=b.sid ORDER BY record_time desc)c
+GROUP BY sid;
+
+/* 查询所有区最高在线人数情况 */
+SELECT sum(online_num) as max_num, record_time FROM onlineLog GROUP BY record_time ORDER BY max_num DESC LIMIT  10;
