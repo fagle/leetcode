@@ -122,7 +122,7 @@ CREATE TABLE `onlineLog` (
   `id` double NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+/* 测试数据3668014行 */
 
 /* 查询最近各区最大在线人数情况 */
 select c.*  from
@@ -170,6 +170,15 @@ WHERE
   b.record_time = a.record_time
 GROUP BY
   a.record_time;
+
+/* 昨天这个时候的在线人数 */
+SELECT
+  sum(online_num) AS current_num,
+  record_time
+FROM
+  onlineLog
+WHERE
+  record_time =  DATE_FORMAT((SELECT DATE_SUB(NOW(), INTERVAL 1 DAY)), '%Y-%m-%d %H:%k:00');
 
 /* 最近10次在线人数统计,14.816s */
 SELECT
