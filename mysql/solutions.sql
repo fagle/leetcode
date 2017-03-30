@@ -220,3 +220,5 @@ WHERE
   b.record_time = a.record_time
 GROUP BY
   a.record_time;
+
+SELECT sid, online_num FROM onlineLog LEFT JOIN serverInfo ON serverInfo.serverid = sid%1000 WHERE record_time =  DATE_FORMAT(( DATE_SUB(NOW(), INTERVAL 1 MINUTE )), '%Y-%m-%d %H:%k:00');
