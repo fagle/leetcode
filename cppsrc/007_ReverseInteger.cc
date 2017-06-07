@@ -4,7 +4,7 @@
 class Solution {
 public:
 	int reverse(int x) {
-		long r = 0;
+		int64_t r = 0;
 		do {
 			r = r * 10 + x % 10;
 		} while (x = x / 10);
