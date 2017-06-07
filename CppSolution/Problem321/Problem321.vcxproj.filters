@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\321_CreateMaximunNumber.cc">
+    <ClCompile Include="..\..\cppsrc\321_CreateMaximunNumber.cc">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

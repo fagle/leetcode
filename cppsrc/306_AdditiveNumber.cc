@@ -1,6 +1,9 @@
+#include "Vlpp.h"
 #include <iostream>
 #include <string>
+
 using namespace std;
+
 class Solution {
 public:
     bool isAdditiveNumber(string num) {
@@ -82,10 +85,9 @@ public:
     }
 };
 
-int main() {
+TEST_CASE(Test306) {
     Solution s;
     string s1("123");//true
     string s2("120122436");//false
     cout << s.isAdditiveNumber(s2) << endl;
-    getchar();
 }
