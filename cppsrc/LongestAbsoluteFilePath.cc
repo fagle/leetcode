@@ -1,6 +1,9 @@
+#include "Vlpp.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
+
 using namespace std;
 class Solution {
 public:
@@ -8,10 +11,10 @@ public:
         if (input.empty())
             return 0;
         vector<int> lens;
-        int level=0, curlen=0, maxlen=0;
+        unsigned level=0, curlen=0, maxlen=0;
         bool bFile=false;
         lens.push_back(0);
-        for(int i=0; i<input.length(); i++){
+        for(size_t i=0; i<input.length(); i++){
             switch(input[i]) {
                 case '\n':
                     if(bFile) {
@@ -49,7 +52,7 @@ public:
     }
 };
 
-int main() {
+TEST_CASE(TestLongestAbsoluteFilePath){
     Solution s;
     std::cout << s.lengthLongestPath("dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext") << endl;
 }

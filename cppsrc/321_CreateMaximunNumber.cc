@@ -1,3 +1,5 @@
+#include "Vlpp.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -18,7 +20,7 @@ public:
     private:
         vector<Node> pq;
         vector<int> nums;
-        int length;
+        size_t length;
     public:
         MaxPQ(int k): length(k) {
         }
@@ -136,16 +138,15 @@ public:
     
 };
 
-int main() {
-    Solution s;
+TEST_CASE(Test321) {
+    //Solution s;
 //    vector<int> nums1 = {3, 4, 6, 5};
 //    vector<int> nums2 = {9, 1, 2, 5, 8, 3};
-    vector<int> nums1 = {1,7,5};
+    /*vector<int> nums1 = {1,7,5};
     vector<int> nums2 = {8,6,9};
     auto pq = s.maxNumber(nums1, nums2, 3);
     cout << "pq.size = " << pq.size() << endl;
     for(int i=0; i<pq.size(); i++) {
         cout << "pq["<< i <<"] = " <<pq[i] << endl;
-    }
-    return 0;
+    }*/
 }

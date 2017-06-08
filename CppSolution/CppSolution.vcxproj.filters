@@ -33,10 +33,57 @@
     <ClCompile Include="..\cppsrc\008_StringToInteger.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\cppsrc\321_CreateMaximunNumber.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\AHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\HandlerMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\LongestAbsoluteFilePath.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\MessageHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\TestHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cppsrc\TestTTS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cppsrc\Vlpp.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\cppsrc\AHandler.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cppsrc\BHandler.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cppsrc\HandlerMap.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cppsrc\MessageHandler.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cppsrc\stdafx.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cppsrc\targetver.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\cppsrc\compile">
+      <Filter>源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

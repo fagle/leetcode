@@ -23,11 +23,28 @@
     <ClCompile Include="..\cppsrc\008_StringToInteger.cc" />
     <ClCompile Include="..\cppsrc\009_PalindromeNumber.cc" />
     <ClCompile Include="..\cppsrc\306_AdditiveNumber.cc" />
+    <ClCompile Include="..\cppsrc\321_CreateMaximunNumber.cc" />
+    <ClCompile Include="..\cppsrc\AHandler.cpp" />
+    <ClCompile Include="..\cppsrc\TestTTS.cpp" />
+    <ClCompile Include="..\cppsrc\HandlerMap.cpp" />
+    <ClCompile Include="..\cppsrc\LongestAbsoluteFilePath.cc" />
+    <ClCompile Include="..\cppsrc\MessageHandler.cpp" />
+    <ClCompile Include="..\cppsrc\stdafx.cpp" />
+    <ClCompile Include="..\cppsrc\TestHandler.cpp" />
     <ClCompile Include="..\cppsrc\Vlpp.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\cppsrc\AHandler.h" />
+    <ClInclude Include="..\cppsrc\BHandler.h" />
+    <ClInclude Include="..\cppsrc\HandlerMap.h" />
+    <ClInclude Include="..\cppsrc\MessageHandler.h" />
+    <ClInclude Include="..\cppsrc\stdafx.h" />
+    <ClInclude Include="..\cppsrc\targetver.h" />
     <ClInclude Include="..\cppsrc\Vlpp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\cppsrc\compile" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FAD67E96-74B2-4A81-9793-8300A922AC13}</ProjectGuid>

@@ -11,7 +11,8 @@ public class Problem005 {
     public class Solution {
 
         boolean isPalindrome(String s) {
-            for (int i=0; i<s.length(); i++) {
+            int n = s.length()/2;
+            for (int i=0; i<n; i++) {
                 if (s.charAt(i) != s.charAt(s.length() - i - 1))
                     return false;
             }
