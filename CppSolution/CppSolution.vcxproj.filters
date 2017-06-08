@@ -27,6 +27,9 @@
     <ClCompile Include="..\cppsrc\007_ReverseInteger.cc">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\cppsrc\009_PalindromeNumber.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cppsrc\Vlpp.h">

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cppsrc\007_ReverseInteger.cc" />
+    <ClCompile Include="..\cppsrc\009_PalindromeNumber.cc" />
     <ClCompile Include="..\cppsrc\306_AdditiveNumber.cc" />
     <ClCompile Include="..\cppsrc\Vlpp.cpp" />
     <ClCompile Include="Main.cpp" />
