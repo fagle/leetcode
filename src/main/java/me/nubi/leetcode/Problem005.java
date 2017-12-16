@@ -19,6 +19,12 @@ public class Problem005 {
             return true;
         }
 
+        /*public String longestPalindrome(String s) {
+            for (int i=0; i<s.length(); i++) {
+
+            }
+            return null;
+        }*/
         public String longestPalindrome(String s) {
             String maxstr = s.substring(0, 1);
             for (int i=0; i<s.length(); i++) {
