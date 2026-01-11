@@ -1,15 +1,10 @@
 package me.nubi.leetcode;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.Arrays;
-
 /**
  * Created by fagle on 2017/3/31.
  */
 public class Problem004 {
-    public class Solution {
+    public static class Solution {
         public double findMedianSortedArrays(int[] nums1, int[] nums2) {
             double median=0;
             int total = nums1.length + nums2.length;
@@ -36,15 +31,4 @@ public class Problem004 {
         }
     }
 
-    @Test
-    public void test() {
-        Solution solution = new Solution();
-        int[] nums1 = new int[] {1, 3};
-        int[] nums2 = new int[] {2};
-        double delta = 0.00001;
-        Assert.assertEquals(2.0, solution.findMedianSortedArrays(nums1, nums2), delta);
-        nums1 = new int[] {1, 2};
-        nums2 = new int[] {3, 4};
-        Assert.assertEquals(2.5, solution.findMedianSortedArrays(nums1, nums2), delta);
-    }
 }
