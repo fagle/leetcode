@@ -7,7 +7,7 @@ public class Problem001 {
     public int[] twoSum(int[] nums, int target) {
 
         for (int i=0; i<nums.length; i++) {
-            int j = search(nums, i, target - nums[i]);
+            int j = search(nums, i+1, target - nums[i]);
             if ( j > -1) {
                 return new int[] {i, j};
             }
@@ -16,10 +16,8 @@ public class Problem001 {
     }
 
     private int search(int [] nums, int src, int target) {
-        for (int i=0; i<nums.length; i++) {
+        for (int i= src; i<nums.length; i++) {
             if (target == nums[i]) {
-                if (i == src)
-                    continue;
                 return i;
             }
         }

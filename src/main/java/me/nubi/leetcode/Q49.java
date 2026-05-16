@@ -1,2 +1,4 @@
-package me.nubi.leetcode;public class Q49 {
+package me.nubi.leetcode;
+
+public class Q49 {
 }
