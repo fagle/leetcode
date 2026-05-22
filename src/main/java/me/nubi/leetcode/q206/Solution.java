@@ -1,8 +1,7 @@
 package me.nubi.leetcode.q206;
 
 
-
-
+import me.nubi.leetcode.type.ListNode;
 
 public class Solution {
     public ListNode reverseList(ListNode head) {
@@ -21,11 +20,5 @@ public class Solution {
         return cur;
     }
 
-    public static class ListNode {
-        int val;
-        ListNode next;
-        ListNode() {}
-        ListNode(int val) { this.val = val; }
-        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-    }
+
 }
