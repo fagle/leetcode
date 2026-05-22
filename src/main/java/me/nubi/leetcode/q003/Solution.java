@@ -10,8 +10,6 @@ import java.util.List;
  */
 public class Solution {
 
-
-
         public int lengthOfLongestSubstring(String s) {
             List<Character> list = new ArrayList<>(s.length());
             int max=0;
