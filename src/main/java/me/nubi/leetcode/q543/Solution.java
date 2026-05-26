@@ -1,4 +1,4 @@
-package me.nubi.leetcode.q100;
+package me.nubi.leetcode.q543;
 
 import me.nubi.leetcode.type.TreeNode;
 
