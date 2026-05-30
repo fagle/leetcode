@@ -17,3 +17,4 @@ CppSolution/x64/
 CppSolution/*.sdf
 CppSolution/*.suo
 CppSolution/*.user
+gradle/wrapper/gradle-wrapper.jar
