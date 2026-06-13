@@ -21,9 +21,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\cppsrc\Vlpp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\cppsrc\007_ReverseInteger.cc">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -59,7 +56,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\cppsrc\Vlpp.h">
+    <ClInclude Include="..\cppsrc\test.h">
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="..\cppsrc\AHandler.h">

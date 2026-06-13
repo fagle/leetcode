@@ -1,8 +1,5 @@
-#include "..\cppsrc\Vlpp.h"
-
-using namespace vl;
+#include "..\cppsrc\test.h"
 
 int main() {
-	unittest::UnitTest::RunAndDisposeTests();
-	return 0;
+	return testlite::RunAllTests();
 }

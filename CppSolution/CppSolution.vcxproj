@@ -31,7 +31,6 @@
     <ClCompile Include="..\cppsrc\MessageHandler.cpp" />
     <ClCompile Include="..\cppsrc\stdafx.cpp" />
     <ClCompile Include="..\cppsrc\TestHandler.cpp" />
-    <ClCompile Include="..\cppsrc\Vlpp.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -41,7 +40,7 @@
     <ClInclude Include="..\cppsrc\MessageHandler.h" />
     <ClInclude Include="..\cppsrc\stdafx.h" />
     <ClInclude Include="..\cppsrc\targetver.h" />
-    <ClInclude Include="..\cppsrc\Vlpp.h" />
+    <ClInclude Include="..\cppsrc\test.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\cppsrc\compile" />

@@ -1,4 +1,4 @@
-#include "Vlpp.h"
+#include "test.h"
 #include <stdint.h>
 
 class Solution {
@@ -18,8 +18,6 @@ public:
 		return false;
 	}
 };
-
-using namespace vl;
 
 TEST_CASE(Test009) {
 	Solution sol;

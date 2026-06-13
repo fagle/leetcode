@@ -3,8 +3,7 @@
 #include "AHandler.h"
 #include "BHandler.h"
 #include "MessageHandler.h"
-#include "Vlpp.h"
-using namespace vl;
+#include "test.h"
 using namespace std;
 
 TEST_CASE(TestHandlerMap)
