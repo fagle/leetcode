@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>柱状图最大矩形 - 单调栈交互推导</title>
+  <style>
+    :root {
+      --text: #202124;
+      --muted: #5f6368;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --red: #dc2626;
+      --red-light: #fecaca;
+      --green: #059669;
+      --green-light: #a7f3d0;
+      --purple: #7c3aed;
+      --purple-light: #ddd6fe;
+      --orange: #ea580c;
+      --orange-light: rgba(249, 115, 22, 0.28);
+      --panel: #f9fafb;
+      --line: #d1d5db;
+    }
+
+    body {
+      margin: 0;
+      font-family: Consolas, "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background: #ffffff;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .lead {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .sample-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: -4px 0 20px;
+    }
+
+    .sample-tab {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .sample-tab.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(680px, 1fr) 340px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .stage {
+      padding: 18px;
+      background: white;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .side {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .step-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--blue-light);
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    h2 {
+      margin: 14px 0 10px;
+      font-size: 21px;
+      line-height: 1.4;
+    }
+
+    .explain {
+      min-height: 188px;
+      color: #374151;
+      line-height: 1.75;
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    .formula {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--blue);
+      color: white;
+    }
+
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: white;
+      color: #374151;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .dot.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      margin-top: 18px;
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      margin-right: 6px;
+      vertical-align: -1px;
+      border: 2px solid currentColor;
+    }
+
+    .normal::before { background: #bfdbfe; color: #2563eb; }
+    .current::before { background: var(--purple-light); color: var(--purple); }
+    .popped::before { background: var(--red-light); color: var(--red); }
+    .left::before { background: var(--green-light); color: var(--green); }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .side { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>柱状图最大矩形：单调栈交互推导</h1>
+    <p class="lead">
+      末尾补一个 0。点击步骤，重点看“弹出后新的栈顶”为什么是左边界。
+    </p>
+    <div class="sample-tabs" id="sampleTabs"></div>
+
+    <div class="layout">
+      <section class="card stage">
+        <svg viewBox="0 0 720 500" role="img" aria-label="柱状图最大矩形单调栈推导图">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#374151"></path>
+            </marker>
+          </defs>
+
+          <line x1="58" y1="390" x2="498" y2="390" stroke="#9ca3af" stroke-width="2"></line>
+          <line x1="58" y1="90" x2="58" y2="390" stroke="#9ca3af" stroke-width="2"></line>
+
+          <g id="areaLayer"></g>
+          <g id="barLayer"></g>
+          <g id="labelLayer"></g>
+          <g id="arrowLayer"></g>
+
+          <rect x="530" y="88" width="160" height="225" rx="12" fill="#f9fafb" stroke="#d1d5db" stroke-width="2"></rect>
+          <text x="550" y="120" font-size="17" font-weight="700">栈 stack</text>
+          <text x="550" y="145" font-size="12" fill="#6b7280">栈底在下，栈顶在上</text>
+          <g id="stackLayer"></g>
+
+          <rect x="48" y="425" width="642" height="50" rx="10" fill="#f9fafb" stroke="#d1d5db"></rect>
+          <text id="statusText" x="70" y="456" font-size="16" font-weight="700"></text>
+        </svg>
+      </section>
+
+      <aside class="card side">
+        <span class="step-tag" id="stepTag"></span>
+        <h2 id="stepTitle"></h2>
+        <div class="explain" id="explain"></div>
+        <div class="formula" id="formula"></div>
+
+        <div class="controls">
+          <button class="secondary" id="prevBtn">上一步</button>
+          <button id="nextBtn">下一步</button>
+        </div>
+
+        <div class="dots" id="dots"></div>
+
+        <div class="legend">
+          <span class="normal">普通柱子</span>
+          <span class="current">当前 i</span>
+          <span class="popped">被弹出</span>
+          <span class="left">左边界</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const samples = [
+      {
+        name: "[2,1,5,6,2,3]",
+        heights: [2, 1, 5, 6, 2, 3, 0],
+        steps: [
+          {
+            title: "初始化：栈存下标，不存高度",
+            stack: [],
+            current: 0,
+            status: "准备从 i=0 开始扫描。目标：让栈里的高度保持递增。",
+            explain: "为什么存下标？因为算面积时既需要高度，也需要左右边界的位置。\n\n栈的含义：从栈底到栈顶，对应的柱子高度递增。",
+            formula: "遇到更高或相等：入栈\n遇到更矮：开始弹栈并结算面积",
+          },
+          {
+            title: "i=0，高度 2，栈空，入栈",
+            stack: [0],
+            current: 0,
+            status: "push(0)，stack = [0]",
+            explain: "栈空时没有比较对象，直接把下标 0 放进去。\n\n现在栈里高度是 [2]，当然满足递增。",
+            formula: "stack = [0]\nheights[0] = 2",
+          },
+          {
+            title: "i=1，高度 1，挡住了高度 2",
+            stack: [],
+            current: 1,
+            popped: 0,
+            area: { from: 0, to: 0, height: 2 },
+            status: "pop(0)，结算高度 2 的矩形",
+            explain: "当前高度 1 比栈顶高度 2 小，说明下标 0 这根柱子向右最多只能到 i=1 之前。\n\n弹出 0 后栈为空，表示左边没有更矮的柱子，所以 left = -1。",
+            formula: "height = 2\nright = i = 1\nleft = -1\nwidth = 1 - (-1) - 1 = 1\narea = 2 × 1 = 2",
+          },
+          {
+            title: "结算完后，把 i=1 入栈",
+            stack: [1],
+            current: 1,
+            status: "push(1)，stack = [1]",
+            explain: "比当前柱子高的都已经结算完了，现在可以把高度 1 入栈。\n\n它会成为后面很多柱子的左侧低墙。",
+            formula: "stack = [1]\nheights[1] = 1\nmax = 2",
+          },
+          {
+            title: "i=2 和 i=3 连续升高，直接入栈",
+            stack: [1, 2, 3],
+            current: 3,
+            status: "push(2), push(3)，stack = [1, 2, 3]",
+            explain: "高度 5、6 都比栈顶更高，所以直接入栈。\n\n现在栈里对应高度 [1, 5, 6]，仍然递增。",
+            formula: "stack = [1, 2, 3]\nheight = [1, 5, 6]",
+          },
+          {
+            title: "i=4，高度 2，先弹出高度 6",
+            stack: [1, 2],
+            current: 4,
+            popped: 3,
+            left: 2,
+            area: { from: 3, to: 3, height: 6 },
+            status: "pop(3)，right=4，left=2",
+            explain: "当前高度 2 比栈顶高度 6 小，所以高度 6 的右边界确定了：就是当前 i=4。\n\n弹出 3 后，新栈顶是 2。下标 2 的高度是 5，它是左边第一个比 6 矮的柱子。",
+            formula: "height = 6\nright = 4\nleft = 2\nwidth = 4 - 2 - 1 = 1\narea = 6 × 1 = 6",
+          },
+          {
+            title: "高度 2 仍然挡住高度 5，继续弹",
+            stack: [1],
+            current: 4,
+            popped: 2,
+            left: 1,
+            area: { from: 2, to: 3, height: 5 },
+            status: "pop(2)，right=4，left=1，得到当前最大面积 10",
+            explain: "弹出高度 5 时，右边界仍然是当前 i=4。\n\n关键来了：弹出 2 后，新栈顶是 1。下标 1 的高度是 1，是左边第一个比 5 矮的柱子。\n\n所以高度 5 可以覆盖下标 2 到 3，宽度是 2。",
+            formula: "height = 5\nright = 4\nleft = 1\nwidth = 4 - 1 - 1 = 2\narea = 5 × 2 = 10",
+          },
+          {
+            title: "当前高度 2 比栈顶高度 1 高，i=4 入栈",
+            stack: [1, 4],
+            current: 4,
+            left: 1,
+            status: "push(4)，stack = [1, 4]",
+            explain: "现在栈顶高度是 1，当前高度 2 更高，递增关系恢复，所以下标 4 入栈。",
+            formula: "stack = [1, 4]\nheight = [1, 2]\nmax = 10",
+          },
+          {
+            title: "i=5，高度 3，更高，入栈",
+            stack: [1, 4, 5],
+            current: 5,
+            status: "push(5)，stack = [1, 4, 5]",
+            explain: "高度 3 比栈顶高度 2 高，继续入栈。\n\n栈里高度变成 [1, 2, 3]。",
+            formula: "stack = [1, 4, 5]\nheight = [1, 2, 3]",
+          },
+          {
+            title: "末尾补 0：强制清空栈",
+            stack: [1, 4],
+            current: 6,
+            popped: 5,
+            left: 4,
+            area: { from: 5, to: 5, height: 3 },
+            status: "i=6 是补的 0，先 pop(5)",
+            explain: "补 0 的作用：保证最后所有柱子都会被一个更矮的柱子挡住，从而触发结算。\n\n先弹出高度 3，左边界是新栈顶 4，右边界是 6。",
+            formula: "height = 3\nright = 6\nleft = 4\nwidth = 6 - 4 - 1 = 1\narea = 3 × 1 = 3",
+          },
+          {
+            title: "继续清算高度 2",
+            stack: [1],
+            current: 6,
+            popped: 4,
+            left: 1,
+            area: { from: 2, to: 5, height: 2 },
+            status: "pop(4)，面积 2 × 4 = 8",
+            explain: "弹出下标 4 后，新栈顶是 1，说明下标 1 是左边第一个比高度 2 矮的位置。\n\n右边界是补的 0，也就是 i=6。高度 2 可以覆盖下标 2 到 5。",
+            formula: "height = 2\nright = 6\nleft = 1\nwidth = 6 - 1 - 1 = 4\narea = 2 × 4 = 8",
+          },
+          {
+            title: "最后弹出高度 1，结束",
+            stack: [6],
+            current: 6,
+            popped: 1,
+            area: { from: 0, to: 5, height: 1 },
+            status: "最终最大面积 max = 10",
+            explain: "高度 1 可以覆盖整个原数组，但面积只有 6。\n\n所有柱子都结算过了，答案就是之前得到的最大值 10。",
+            formula: "height = 1\nright = 6\nleft = -1\nwidth = 6 - (-1) - 1 = 6\narea = 1 × 6 = 6\nanswer = 10",
+          }
+        ]
+      },
+      {
+        name: "[2,1,2]",
+        heights: [2, 1, 2, 0],
+        steps: [
+          {
+            title: "初始化：这个例子专门看宽度",
+            stack: [],
+            current: 0,
+            status: "准备扫描 [2,1,2]，末尾补 0。",
+            explain: "这个例子的答案是 3：中间高度 1 可以横跨三个柱子。\n\n如果弹出时只用 i - poppedIndex，就会漏掉这个宽度。",
+            formula: "正确宽度：\nwidth = right - left - 1\nleft 是弹出后新的栈顶",
+          },
+          {
+            title: "i=0，高度 2，入栈",
+            stack: [0],
+            current: 0,
+            status: "push(0)，stack = [0]",
+            explain: "栈空，直接入栈。此时栈内高度 [2]。",
+            formula: "stack = [0]\nheights[0] = 2",
+          },
+          {
+            title: "i=1，高度 1，弹出高度 2",
+            stack: [],
+            current: 1,
+            popped: 0,
+            area: { from: 0, to: 0, height: 2 },
+            status: "pop(0)，面积 2 × 1 = 2",
+            explain: "当前高度 1 比栈顶高度 2 小，所以高度 2 到这里被挡住了。\n\n弹出后栈空，left = -1，right = 1。",
+            formula: "height = 2\nright = 1\nleft = -1\nwidth = 1 - (-1) - 1 = 1\narea = 2",
+          },
+          {
+            title: "i=1 入栈，成为左侧低墙",
+            stack: [1],
+            current: 1,
+            status: "push(1)，stack = [1]",
+            explain: "高度 1 很矮，它暂时留在栈里。\n\n后面如果遇到补 0，它会被结算成横跨全数组的大矩形。",
+            formula: "stack = [1]\nmax = 2",
+          },
+          {
+            title: "i=2，高度 2，比 1 高，入栈",
+            stack: [1, 2],
+            current: 2,
+            left: 1,
+            status: "push(2)，stack = [1, 2]",
+            explain: "当前高度 2 比栈顶高度 1 高，递增关系成立，直接入栈。",
+            formula: "stack = [1, 2]\nheight = [1, 2]",
+          },
+          {
+            title: "末尾补 0，先弹出右侧高度 2",
+            stack: [1],
+            current: 3,
+            popped: 2,
+            left: 1,
+            area: { from: 2, to: 2, height: 2 },
+            status: "pop(2)，面积 2 × 1 = 2",
+            explain: "补 0 比栈顶高度 2 小，弹出下标 2。\n\n弹出后新栈顶是 1，所以 left = 1，right = 3。",
+            formula: "height = 2\nright = 3\nleft = 1\nwidth = 3 - 1 - 1 = 1\narea = 2",
+          },
+          {
+            title: "关键：弹出中间高度 1，宽度是 3",
+            stack: [],
+            current: 3,
+            popped: 1,
+            area: { from: 0, to: 2, height: 1 },
+            status: "pop(1)，得到答案 1 × 3 = 3",
+            explain: "这一步就是你的旧写法容易漏的地方。\n\n弹出下标 1 后，栈空，所以 left = -1；right 是当前补 0 的下标 3。\n\n因此高度 1 可以从下标 0 覆盖到下标 2，宽度是 3。",
+            formula: "height = 1\nright = 3\nleft = -1\nwidth = 3 - (-1) - 1 = 3\narea = 1 × 3 = 3\nanswer = 3",
+          }
+        ]
+      }
+    ];
+
+    let sampleIndex = 0;
+    let heights = samples[sampleIndex].heights;
+    let bars = makeBars(heights);
+    let steps = samples[sampleIndex].steps;
+
+    let stepIndex = 0;
+
+    const barLayer = document.querySelector("#barLayer");
+    const labelLayer = document.querySelector("#labelLayer");
+    const areaLayer = document.querySelector("#areaLayer");
+    const arrowLayer = document.querySelector("#arrowLayer");
+    const stackLayer = document.querySelector("#stackLayer");
+    const statusText = document.querySelector("#statusText");
+    const stepTag = document.querySelector("#stepTag");
+    const stepTitle = document.querySelector("#stepTitle");
+    const explain = document.querySelector("#explain");
+    const formula = document.querySelector("#formula");
+    const prevBtn = document.querySelector("#prevBtn");
+    const nextBtn = document.querySelector("#nextBtn");
+    const dots = document.querySelector("#dots");
+    const sampleTabs = document.querySelector("#sampleTabs");
+
+    function makeBars(values) {
+      const maxHeight = Math.max(...values, 1);
+      const scale = Math.min(78, 285 / maxHeight);
+      const gap = values.length <= 4 ? 82 : 60;
+      const barWidth = values.length <= 4 ? 54 : 42;
+      const startX = values.length <= 4 ? 120 : 82;
+      return values.map((h, i) => ({
+        i,
+        h,
+        x: startX + i * gap,
+        y: 390 - h * scale,
+        w: barWidth,
+        height: h * scale,
+        scale
+      }));
+    }
+
+    function rect(attrs) {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      return el;
+    }
+
+    function text(attrs, content) {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      el.textContent = content;
+      return el;
+    }
+
+    function line(attrs) {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      return el;
+    }
+
+    function renderDots() {
+      dots.innerHTML = "";
+      steps.forEach((_, index) => {
+        const button = document.createElement("button");
+        button.className = "dot" + (index === stepIndex ? " active" : "");
+        button.textContent = index + 1;
+        button.addEventListener("click", () => {
+          stepIndex = index;
+          render();
+        });
+        dots.appendChild(button);
+      });
+    }
+
+    function renderSampleTabs() {
+      sampleTabs.innerHTML = "";
+      samples.forEach((sample, index) => {
+        const button = document.createElement("button");
+        button.className = "sample-tab" + (index === sampleIndex ? " active" : "");
+        button.textContent = "样例 " + sample.name;
+        button.addEventListener("click", () => {
+          sampleIndex = index;
+          heights = samples[sampleIndex].heights;
+          bars = makeBars(heights);
+          steps = samples[sampleIndex].steps;
+          stepIndex = 0;
+          render();
+        });
+        sampleTabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      const step = steps[stepIndex];
+      barLayer.innerHTML = "";
+      labelLayer.innerHTML = "";
+      areaLayer.innerHTML = "";
+      arrowLayer.innerHTML = "";
+      stackLayer.innerHTML = "";
+
+      if (step.area) {
+        const fromBar = bars[step.area.from];
+        const toBar = bars[step.area.to];
+        const scale = fromBar.scale;
+        areaLayer.appendChild(rect({
+          x: fromBar.x,
+          y: 390 - step.area.height * scale,
+          width: toBar.x + toBar.w - fromBar.x,
+          height: step.area.height * scale,
+          fill: "rgba(249, 115, 22, 0.28)",
+          stroke: "#ea580c",
+          "stroke-width": 2
+        }));
+      }
+
+      bars.forEach((bar) => {
+        let fill = "#bfdbfe";
+        let stroke = "#2563eb";
+        let width = 2;
+        if (bar.i === step.current) {
+          fill = "#ddd6fe";
+          stroke = "#7c3aed";
+          width = 3;
+        }
+        if (bar.i === step.left) {
+          fill = "#a7f3d0";
+          stroke = "#059669";
+          width = 3;
+        }
+        if (bar.i === step.popped) {
+          fill = "#fecaca";
+          stroke = "#dc2626";
+          width = 3;
+        }
+
+        barLayer.appendChild(rect({
+          x: bar.x,
+          y: bar.y,
+          width: bar.w,
+          height: bar.height,
+          fill,
+          stroke,
+          "stroke-width": width
+        }));
+
+        labelLayer.appendChild(text({ x: bar.x + 15, y: 414, "font-size": 14 }, bar.i));
+        labelLayer.appendChild(text({ x: bar.x + 15, y: bar.y - 8, "font-size": 14, "font-weight": 700 }, bar.h));
+      });
+
+      if (step.current !== undefined) {
+        const current = bars[step.current];
+        arrowLayer.appendChild(line({
+          x1: current.x + 21,
+          y1: 48,
+          x2: current.x + 21,
+          y2: Math.max(75, current.y - 18),
+          stroke: "#374151",
+          "stroke-width": 2,
+          "marker-end": "url(#arrow)"
+        }));
+        arrowLayer.appendChild(text({
+          x: current.x - 8,
+          y: 38,
+          "font-size": 15,
+          "font-weight": 700
+        }, "i=" + step.current));
+      }
+
+      step.stack.forEach((index, pos) => {
+        const y = 270 - pos * 42;
+        stackLayer.appendChild(rect({
+          x: 565,
+          y,
+          width: 90,
+          height: 34,
+          rx: 7,
+          fill: "#dbeafe",
+          stroke: "#2563eb",
+          "stroke-width": 2
+        }));
+        stackLayer.appendChild(text({
+          x: 580,
+          y: y + 22,
+          "font-size": 14,
+          "font-weight": 700
+        }, index + " / h=" + heights[index]));
+      });
+
+      statusText.textContent = step.status;
+      stepTag.textContent = `步骤 ${stepIndex + 1} / ${steps.length}`;
+      stepTitle.textContent = step.title;
+      explain.textContent = step.explain;
+      formula.textContent = step.formula;
+      prevBtn.disabled = stepIndex === 0;
+      nextBtn.disabled = stepIndex === steps.length - 1;
+      renderSampleTabs();
+      renderDots();
+    }
+
+    prevBtn.addEventListener("click", () => {
+      stepIndex = Math.max(0, stepIndex - 1);
+      render();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      stepIndex = Math.min(steps.length - 1, stepIndex + 1);
+      render();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        prevBtn.click();
+      }
+      if (event.key === "ArrowRight") {
+        nextBtn.click();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
